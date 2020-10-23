@@ -1,9 +1,24 @@
-let tt = 'Happy Halloween';
-let tt2 = 'Trick or Treat... do you feel lucky?'
-let mysong;
-let volume = 1;
+//!!
+//disattivare adBlock per il corretto funzionamento
 
-let zuccaImage;
+
+let tt = 'Happy Halloween';
+let tt2 = 'Quanto sei zuccone? say Spookyyyyy'
+let tt3 = '- ZuccoMetro'
+let tt4 = 'premi x per vdere il risultato'
+let mysong;
+let risataSong;
+
+//per ballonzolo zucca
+let volSong = 0;
+let molla;
+
+//per zuccaggine level
+let mic;
+let rW, rH, hvol;
+
+//per oggetti
+let zuccaImage, zuccaSad, zuccaDisplay;
 let myZuccaArrey = [];
 
 let eyeImage, bg;
@@ -14,21 +29,29 @@ let myEyeArray = [];
 function preload() {
   bg = loadImage("./assets/bg.png");
   zuccaImage = loadImage("./assets/zucca.png");
+  zuccaSad = loadImage("./assets/zucca2.png");
   eyeImage = loadImage("./assets/lightEyes.png");
   mySong = loadSound("./assets/base.mp3");
+  risataSong = loadSound("./assets/risata.mp3");
 }
 
 ///////
 
 function setup() {
-  createCanvas(windowWidth, windowHeight)
-  //frameRate(2);
+  createCanvas(windowWidth, windowHeight);
 
-  //Suono The analyzer allows to perform analysis on a sound file
+  //Suono: analyzer allows to perform analysis on a sound file
   analyzer = new p5.Amplitude();
   analyzer.setInput(mySong);
+  analyzer.setInput(risataSong);
+//  volume = constrain(volume, 0, 1);
+ mySong.amp(0.25);
+  //parte musica
+  mySong.loop();
 
-
+  //microfono get: Create an Audio input
+  mic = new p5.AudioIn();
+  mic.start();
 
   //crate object OCCHI
   for (let i = 0; i < 50; i++) {
@@ -39,15 +62,10 @@ function setup() {
   for (let i = 0; i < 1; i++) {
     myZuccaArrey.push(new Zucca());
   }
-  mySong.play();
 }
 
 
 function draw() {
-  // get the volume and remap it to a bigger value
-  volume = analyzer.getLevel();
-  volume = map(volume, 0, 1, zuccaImage.height / 2, zuccaImage.height); //map(value,start1,stop1,start2,stop2,[withinBounds])
-  console.log(volume);
   push();
   imageMode(CORNER);
   background(bg);
@@ -55,6 +73,31 @@ function draw() {
 
   imageMode(CENTER);
   ellipseMode(CENTER);
+ angleMode(DEGREES);
+  noStroke();
+
+  // get the volume and remap it to a bigger value
+  volSong = analyzer.getLevel();
+  molla = map(volSong, 0, 1, 1.2, 0.3);
+
+
+  //microfono
+  let vol = mic.getLevel();
+  console.log(vol);
+  rW = 50;
+  rH = 300;
+  hvol= map(vol, 0, 1,0,rH);
+push();
+translate(width/2,height/2);
+rotate(180);
+//barra grigia
+fill(230, 230, 230,100);
+rect(width/3, height/7-250, rW, rH);
+//barra arancio
+fill(255, 173, 51, 200);
+  rect(width/3, height/7-250, rW, hvol*1.3);
+pop();
+
 
   //testo
   textAlign(CENTER);
@@ -67,15 +110,14 @@ function draw() {
   textSize(20);
   textFont("Source Sans Pro");
   text(tt2, width / 2, height / 5);
+  text(tt3, width / 6, height / 2.5);
 
   for (let i = 0; i < myEyeArray.length; i++) {
-    myEyeArray[i].updatePosition();
-    myEyeArray[i].display();
+    myEyeArray[i].run();
   }
 
   for (let i = 0; i < myZuccaArrey.length; i++) {
-    myZuccaArrey[i].zupdatePosition();
-    myZuccaArrey[i].zdisplay();
+    myZuccaArrey[i].zrun();
   }
 }
 
@@ -97,6 +139,11 @@ class Occhi {
     this.x += random(-this.speed, this.speed);
     this.y += random(-this.speed, this.speed);
   }
+
+  run() {
+    this.updatePosition();
+    this.display();
+  }
 }
 
 
@@ -106,17 +153,24 @@ class Occhi {
 class Zucca {
   constructor() {
     this.x = width / 2;
-    this.y = height / 2;
+    this.y = height / 1.9;
     this.w = zuccaImage.width / 2;
     this.h = zuccaImage.height / 2;
-    this.size = volume;
     this.speed = 50;
   }
 
   zdisplay() {
     push();
     frameRate(2);
-    image(zuccaImage, this.x, this.y, this.w, this.h * random(0.9, this.size));
+    if (mouseIsPressed) {
+      zuccaDisplay = image(zuccaImage, this.x, this.y, this.w, this.h * molla);
+      risataSong.play();
+
+    } else {
+      console.log(molla);
+    zuccaDisplay = image(zuccaSad, this.x, this.y, this.w, this.h * molla); //random(0.9, this.size)
+      risataSong.stop();
+    }
     pop();
   }
 
@@ -125,21 +179,23 @@ class Zucca {
     if (this.x < width / 2 * 0.95 || this.x > width / 2) {
       this.speed *= -1;
     }
-    //
-    // this.y +=  this.speed;
-    // if(this.y < height/2*0.8 || this.y > height/2*1.2  )
-    // {this.speed *= -1;}
+  }
+  zrun() {
+    this.zupdatePosition();
+    this.zdisplay();
+
   }
 }
 
 
+function good() {
 
-function mouseClicked() {
-  //impostare espolosione
-  //get pizel
-  // espansione
-  // impostare tre e false come finzioni esterne da leggere
-  //impostare home per rigiocare?
-  //foto riscordo ?
-  //suoni mainstream
+}
+
+function bad() {
+
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
