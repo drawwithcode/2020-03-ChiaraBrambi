@@ -5,7 +5,7 @@
 let tt = 'Happy Halloween';
 let tt2 = 'Quanto sei zuccone? say Spookyyyyy'
 let tt3 = '- ZuccoMetro'
-let tt4 = 'premi x per vdere il risultato'
+let tt4 = 'Press x for resalt'
 let mysong;
 let risataSong;
 
@@ -92,10 +92,10 @@ translate(width/2,height/2);
 rotate(180);
 //barra grigia
 fill(230, 230, 230,100);
-rect(width/3, height/7-250, rW, rH);
+rect(width/3.5, height/7-300, rW, rH);
 //barra arancio
 fill(255, 173, 51, 200);
-  rect(width/3, height/7-250, rW, hvol*1.3);
+  rect(width/3.5, height/7-300, rW, hvol*1.5);
 pop();
 
 
@@ -110,7 +110,8 @@ pop();
   textSize(20);
   textFont("Source Sans Pro");
   text(tt2, width / 2, height / 5);
-  text(tt3, width / 6, height / 2.5);
+  text(tt3, width / 5.2, height / 2.2);
+  text(tt4, width / 5, height /1.2);
 
   for (let i = 0; i < myEyeArray.length; i++) {
     myEyeArray[i].run();
