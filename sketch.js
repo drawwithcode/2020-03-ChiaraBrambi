@@ -1,9 +1,8 @@
-
 //!!
 //disattivare adBlock per il corretto funzionamento
 
 let tt = 'Happy Halloween';
-let tt2 = 'Quanto sei zuccone? say Boooooo'
+let tt2 = 'Quanto sei zuccone?  Urla Boooooo per far salire lo ZuccoMetro'
 let tt3 = '- ZuccoMetro'
 let tt4 = 'Press enter for result'
 let mysong;
@@ -154,9 +153,12 @@ function draw() {
     //sottotitolo
     textSize(20);
     textFont("Source Sans Pro");
-    text(tt2, width / 2, height / 5);
+    text(tt2, width / 2, height / 5.5);
     text(tt3, width / 5.2, height / 2.2);
     text(tt4, width / 5, height / 1.2);
+    textSize(16);
+    text('Vinci se premi invio nel momento ', width / 5, height / 1.14);
+    text(' in cui raggiungi lo ZuccoMetro', width / 5, height / 1.1);
 
     for (let i = 0; i < myEyeArray.length; i++) {
       myEyeArray[i].run();
@@ -235,7 +237,7 @@ class Zucca {
   }
 }
 
-function keyPressed(){
+function keyPressed() {
   if (key == 's' || key == 'S') {
     save('cover.png');
   }
