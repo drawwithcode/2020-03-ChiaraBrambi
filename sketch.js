@@ -235,6 +235,12 @@ class Zucca {
   }
 }
 
+function keyPressed(){
+  if (key == 's' || key == 'S') {
+    save('cover.png');
+  }
+}
+
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
