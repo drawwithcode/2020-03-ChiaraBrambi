@@ -1,13 +1,15 @@
+
 //!!
 //disattivare adBlock per il corretto funzionamento
 
-
 let tt = 'Happy Halloween';
-let tt2 = 'Quanto sei zuccone? say Spookyyyyy'
+let tt2 = 'Quanto sei zuccone? say Boooooo'
 let tt3 = '- ZuccoMetro'
-let tt4 = 'Press x for resalt'
+let tt4 = 'Press enter for result'
 let mysong;
 let risataSong;
+let goodSong;
+let badSong;
 
 //per ballonzolo zucca
 let volSong = 0;
@@ -24,6 +26,10 @@ let myZuccaArrey = [];
 let eyeImage, bg;
 let myEyeArray = [];
 
+//score
+let candyImage;
+let fantasmaImage;
+
 ///////
 
 function preload() {
@@ -31,8 +37,12 @@ function preload() {
   zuccaImage = loadImage("./assets/zucca.png");
   zuccaSad = loadImage("./assets/zucca2.png");
   eyeImage = loadImage("./assets/lightEyes.png");
+  candyImage = loadImage("./assets/candy.png");
+  fantasmaImage = loadImage("./assets/fantasma.png");
   mySong = loadSound("./assets/base.mp3");
-  risataSong = loadSound("./assets/risata.mp3");
+  risataSong = loadSound("./assets/risataSong.mp3");
+  goodSong = loadSound("./assets/goodjohn-cena.mp3");
+  badSong = loadSound("./assets/no.mp3");
 }
 
 ///////
@@ -44,8 +54,8 @@ function setup() {
   analyzer = new p5.Amplitude();
   analyzer.setInput(mySong);
   analyzer.setInput(risataSong);
-//  volume = constrain(volume, 0, 1);
- mySong.amp(0.25);
+  //controllo volume
+  mySong.amp(0.25);
   //parte musica
   mySong.loop();
 
@@ -64,6 +74,7 @@ function setup() {
   }
 }
 
+let a;
 
 function draw() {
   push();
@@ -73,7 +84,7 @@ function draw() {
 
   imageMode(CENTER);
   ellipseMode(CENTER);
- angleMode(DEGREES);
+  angleMode(DEGREES);
   noStroke();
 
   // get the volume and remap it to a bigger value
@@ -86,18 +97,13 @@ function draw() {
   console.log(vol);
   rW = 50;
   rH = 300;
-  hvol= map(vol, 0, 1,0,rH);
-push();
-translate(width/2,height/2);
-rotate(180);
-//barra grigia
-fill(230, 230, 230,100);
-rect(width/3.5, height/7-300, rW, rH);
-//barra arancio
-fill(255, 173, 51, 200);
-  rect(width/3.5, height/7-300, rW, hvol*1.5);
-pop();
-
+  hvol = map(vol, 0, 1, 0, rH);
+  //punteggio ZuccoMetro
+  if (hvol > 100) {
+    a = 1;
+  } else {
+    a = 0;
+  }
 
   //testo
   textAlign(CENTER);
@@ -106,20 +112,61 @@ pop();
   textSize(60);
   textFont("Creepster");
   text(tt, width / 2, height / 8);
-  //sottotitolo
-  textSize(20);
-  textFont("Source Sans Pro");
-  text(tt2, width / 2, height / 5);
-  text(tt3, width / 5.2, height / 2.2);
-  text(tt4, width / 5, height /1.2);
 
-  for (let i = 0; i < myEyeArray.length; i++) {
-    myEyeArray[i].run();
+  //tasto invio
+  if (keyIsDown(ENTER)) {
+
+    if (a === 1) {
+      mySong.stop();
+      goodSong.play();
+      image(candyImage, width / 2, height / 2.5, candyImage.width / 2.5, candyImage.height / 2.5);
+      textSize(20);
+      textFont("Source Sans Pro");
+      text('Score:  GoooooD', width / 2, height / 1.5);
+      text('La tua zuccaggine ti ha fatto guadagnare delle caramelle', width / 2, height / 1.4);
+      text('Unisciti anche tu al lato oscuro ;)', width / 2, height / 1.3);
+      noLoop();
+    } else {
+      mySong.stop();
+      badSong.play();
+      image(fantasmaImage, width / 2, height / 2.5, fantasmaImage.width / 1.5, fantasmaImage.height / 2);
+      textSize(20);
+      textFont("Source Sans Pro");
+      text('Score:   Evil', width / 2, height / 1.5);
+      text('Non sei abbastanza zuccone', width / 2, height / 1.4);
+      text('Sei stato selezionato per vincere un kg di sale x)', width / 2, height / 1.3);
+      noLoop();
+    }
+
+  } else {
+    push();
+    translate(width / 2, height / 2);
+    rotate(180);
+    //barra grigia
+    fill(230, 230, 230, 100);
+    rect(width / 3.5, height / 7 - 300, rW, rH);
+    //barra arancio
+    fill(255, 173, 51, 200);
+    rect(width / 3.5, height / 7 - 300, rW, hvol * 1.5);
+    pop();
+
+
+    //sottotitolo
+    textSize(20);
+    textFont("Source Sans Pro");
+    text(tt2, width / 2, height / 5);
+    text(tt3, width / 5.2, height / 2.2);
+    text(tt4, width / 5, height / 1.2);
+
+    for (let i = 0; i < myEyeArray.length; i++) {
+      myEyeArray[i].run();
+    }
+
+    for (let i = 0; i < myZuccaArrey.length; i++) {
+      myZuccaArrey[i].zrun();
+    }
   }
 
-  for (let i = 0; i < myZuccaArrey.length; i++) {
-    myZuccaArrey[i].zrun();
-  }
 }
 
 
@@ -169,7 +216,7 @@ class Zucca {
 
     } else {
       console.log(molla);
-    zuccaDisplay = image(zuccaSad, this.x, this.y, this.w, this.h * molla); //random(0.9, this.size)
+      zuccaDisplay = image(zuccaSad, this.x, this.y, this.w, this.h * molla); //random(0.9, this.size)
       risataSong.stop();
     }
     pop();
@@ -186,15 +233,6 @@ class Zucca {
     this.zdisplay();
 
   }
-}
-
-
-function good() {
-
-}
-
-function bad() {
-
 }
 
 function windowResized() {
